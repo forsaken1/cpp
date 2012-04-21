@@ -1,4 +1,4 @@
-#include "classString.h"
+#include "String.h"
 ///////////////////////////////////////class Buf
 String::Buf::Buf(const char *s) { 
     length = strlen(s);
