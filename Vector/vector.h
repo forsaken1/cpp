@@ -66,10 +66,7 @@ template<class Type>
 Vector<Type>::Iterator::Iterator(int i): index(i), data(NULL) {}
 //Constructor copy
 template<class Type>
-Vector<Type>::Iterator::Iterator(const Iterator &iterator) {
-	index = iterator.index;
-	data = iterator.data;
-}
+Vector<Type>::Iterator::Iterator(const Iterator &iterator):	index(iterator.index), data(iterator.data) {}
 // operator !=
 template<class Type>
 int Vector<Type>::Iterator::operator!=(const Iterator &iterator) {
