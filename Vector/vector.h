@@ -38,6 +38,7 @@ public:
     int GetSize();
     Type GetFrontElement(); 
     Type GetBackElement();
+	Type operator[](int index);
     void InsertAtIndex(int, const Type &);
     void PushFront(const Type &);
     void PushBack(const Type &);
@@ -230,6 +231,12 @@ int Vector<Type>::Empty() {
 template<class Type>
 int Vector<Type>::GetSize() {
 	return size;
+}
+//operator []
+template<class Type>
+Type Vector<Type>::operator[](int index) {
+	Iterator iterator = MoveAtIndex(index);
+	return *iterator;
 }
 //Get front element
 template<class Type>
