@@ -20,6 +20,7 @@ public:
 		Iterator(int);
 		Iterator(const Iterator &);
         
+		int operator!=(const Iterator &);
         Iterator operator++();
         Iterator operator--();
         Iterator operator++(int);
@@ -30,10 +31,10 @@ public:
 	
 	Vector();
 	Vector(int size);
-	Vector(const Vector<Type> &);
+	Vector(Vector<Type> &);
 	~Vector();
 	
-	Vector operator=(const Vector &);
+	Vector operator=(Vector<Type> &);
     int Empty();
     int GetSize();
     Type GetFrontElement(); 
@@ -68,6 +69,11 @@ template<class Type>
 Vector<Type>::Iterator::Iterator(const Iterator &iterator) {
 	index = iterator.index;
 	data = iterator.data;
+}
+// operator !=
+template<class Type>
+int Vector<Type>::Iterator::operator!=(const Iterator &iterator) {
+	return &iterator != this;
 }
 // ++inc
 template<class Type>
@@ -117,13 +123,14 @@ Vector<Type>::Vector(int count) {
 }
 //Constructor Copy
 template<class Type>
-Vector<Type>::Vector(const Vector<Type> &vector) {
+Vector<Type>::Vector(Vector<Type> &vector) {
 	Iterator iterator, iter;
-	size = vector.size;
-	psize = vector.psize;
+	size = 0;
+	psize = vector.size;
+	if(data == NULL) free(data);
 	data = (Type*)malloc(sizeof(Type) * psize);
-	for(iterator = vector.Begin(), iter = Begin(); !IsPastRear(iterator); iterator++, iter++) 
-		*iterator = *iter;
+	for(iterator = vector.Begin(), iter = Begin(); !vector.IsPastRear(iterator); iterator++, iter++) 
+		Insert(iter, *iterator);
 }
 //Destructor
 template<class Type>
@@ -163,7 +170,7 @@ void Vector<Type>::Insert(typename Vector<Type>::Iterator &iterator, const Type 
 			psize++;
 			data = (Type*)realloc(data, sizeof(Type) * psize);
 		}
-		memmove(pointer + 1, pointer, size - iterator.index);
+		memmove(pointer + 1, pointer, sizeof(Type) * (size - iterator.index));
 		*pointer = element;
 	}
 	size++;
@@ -171,8 +178,9 @@ void Vector<Type>::Insert(typename Vector<Type>::Iterator &iterator, const Type 
 //Erase
 template<class Type>
 void Vector<Type>::Erase(typename Vector<Type>::Iterator &iterator) {
+	if(Empty()) return;
 	Type *pointer = data + iterator.index;
-	memmove(pointer, pointer + 1, size - iterator.index);
+	memmove(pointer, pointer + 1, sizeof(Type) * (size - iterator.index));
 	size--;
 }
 //Move at Index
@@ -203,12 +211,15 @@ typename Vector<Type>::Iterator Vector<Type>::End() {
 //Vector
 // =
 template<class Type>
-Vector<Type> Vector<Type>::operator=(const Vector &vector) {
+Vector<Type> Vector<Type>::operator=(Vector &vector) {
 	Iterator iterator, iter;
-	size = vector.size;
-	data = (Type*)malloc(sizeof(Type) * size);
-	for(iterator = vector.Begin(), iter = Begin(); !IsPastRear(iterator); iterator++, iter++) 
-		*iterator = *iter;
+	size = 0;
+	psize = vector.size;
+	if(data == NULL) free(data);
+	data = NULL;
+	data = (Type*)malloc(sizeof(Type) * psize);
+	for(iterator = vector.Begin(), iter = Begin(); !vector.IsPastRear(iterator); iterator++, iter++) 
+		Insert(iter, *iterator);
 	return *this;
 }
 //Empty
@@ -259,6 +270,7 @@ void Vector<Type>::PopFront() {
 template<class Type>
 void Vector<Type>::PopBack() {
 	Iterator iterator = End();
+	iterator--;
 	Erase(iterator);
 }
 //Clear
