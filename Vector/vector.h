@@ -11,24 +11,23 @@ private:
 	int size, psize;
 public:
 	class Iterator {
-    private:
+	private:
 		int index;
 		Type *data;
-    public:
+	public:
 		friend class Vector;
-        Iterator();
+		Iterator();
 		Iterator(int);
 		Iterator(const Iterator &);
         
 		int operator!=(const Iterator &);
-        Iterator operator++();
-        Iterator operator--();
-        Iterator operator++(int);
-        Iterator operator--(int);
-        Type operator*();
-    };
+		Iterator operator++();
+		Iterator operator--();
+		Iterator operator++(int);
+		Iterator operator--(int);
+		Type operator*();
+	};
 
-	
 	Vector();
 	Vector(int size);
 	Vector(Vector<Type> &);
