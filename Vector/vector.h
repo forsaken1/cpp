@@ -1,7 +1,6 @@
 
-#ifndef VECTOR
-#define VECTOR
-#define INITIAL_VECTOR_SIZE 10
+#ifndef VECTOR_H
+#define VECTOR_H
 
 #include <iostream>
 
@@ -9,23 +8,25 @@ template<class Type>
 class Vector {
 private:
 	Type *data;
-	int size;
+	int size, psize;
 public:
 	class Iterator {
     private:
 		int index;
     public:
+		friend class Vector;
         Iterator();
 		Iterator(int);
+		Iterator(const Iterator &);
         
         Iterator operator++();
         Iterator operator--();
         Iterator operator++(int);
         Iterator operator--(int);
         Type operator*();
-		friend Vector;
     };
 
+	friend class Iterator;
 	Vector();
 	Vector(int size);
 	Vector(const Vector<Type> &);
@@ -57,10 +58,15 @@ public:
 //Iterator
 //Constructor
 template<class Type>
-Vector<Type>::Iterator::Iterator(): index(0) {};
+Vector<Type>::Iterator::Iterator(): index(0) {}
 //Constructor on index
 template<class Type>
-Vector<Type>::Iterator::Iterator(int i): index(i) {};
+Vector<Type>::Iterator::Iterator(int i): index(i) {}
+//Constructor copy
+template<class Type>
+Vector<Type>::Iterator::Iterator(const Iterator &iterator) {
+	index = iterator.index;
+}
 // ++inc
 template<class Type>
 typename Vector<Type>::Iterator Vector<Type>::Iterator::operator++() {
@@ -97,19 +103,22 @@ Type Vector<Type>::Iterator::operator*() {
 template<class Type>
 Vector<Type>::Vector() {
 	size = 0;
+	psize = 0;
 }
 //Constructor (size)
 template<class Type>
 Vector<Type>::Vector(int count) {
-	data = (int*)malloc(sizeof(Type) * count);
-	size = count;
+	size = 0;
+	psize = count;
+	data = (Type*)malloc(sizeof(Type) * psize);
 }
 //Constructor Copy
 template<class Type>
 Vector<Type>::Vector(const Vector<Type> &vector) {
 	Iterator iterator, iter;
 	size = vector.size;
-	data = (int*)malloc(sizeof(Type) * size);
+	psize = vector.psize;
+	data = (Type*)malloc(sizeof(Type) * psize);
 	for(iterator = vector.Begin(), iter = Begin(); !IsPastRear(iterator); iterator++, iter++) 
 		*iterator = *iter;
 }
@@ -122,12 +131,12 @@ Vector<Type>::~Vector() {
 //Before first
 template<class Type>
 int Vector<Type>::IsBeforeFirst(typename Vector<Type>::Iterator iterator) {
-	return iterator == NULL ? 0 : iterator->index < 0;
+	return iterator.index < 0;
 }
 //Past rear
 template<class Type>
 int Vector<Type>::IsPastRear(typename Vector<Type>::Iterator iterator) {
-	return iterator == NULL ? 0 : iterator->index >= size; 
+	return iterator.index >= size; 
 }
 //Is Dereferencable
 template<class Type>
@@ -137,15 +146,31 @@ int Vector<Type>::IsDereferencable(typename Vector<Type>::Iterator iterator) {
 //Insert
 template<class Type>
 void Vector<Type>::Insert(typename Vector<Type>::Iterator iterator, Type element) {
-	if(!Empty())
-		memmove(data + iterator.index + 1, data + iterator.index, size - iterator.index - 1);
-	Type *pointer = data + iterator.index;
-	*pointer = element;
+	if(Empty()) {
+		if(size == psize) {
+			psize++;
+			data = (Type*)malloc(sizeof(Type) * psize);
+		}
+		*data = element;
+	}
+	else {
+		Type *pointer = data + iterator.index;
+
+		if(size == psize) {
+			psize++;
+			data = (Type*)realloc(data, sizeof(Type) * psize);
+		}
+		memmove(pointer + 1, pointer, size - iterator.index);
+		*pointer = element;
+	}
+	size++;
 }
 //Erase
 template<class Type>
 void Vector<Type>::Erase(typename Vector<Type>::Iterator iterator) {
-	memmove(data + iterator.index, data + iterator.index + 1, size - iterator.index - 1);
+	Type *pointer = data + iterator.index;
+	memmove(pointer, pointer + 1, size - iterator.index);
+	size--;
 }
 //Move at Index
 template<class Type>
@@ -175,7 +200,7 @@ template<class Type>
 Vector<Type> Vector<Type>::operator=(const Vector &vector) {
 	Iterator iterator, iter;
 	size = vector.size;
-	data = malloc(sizeof(Type) * size);
+	data = (Type*)malloc(sizeof(Type) * size);
 	for(iterator = vector.Begin(), iter = Begin(); !IsPastRear(iterator); iterator++, iter++) 
 		*iterator = *iter;
 }
@@ -238,9 +263,9 @@ void Vector<Type>::Clear() {
 //Print
 template<class Type>
 void Vector<Type>::Print() {
-	Iterator iteator;
+	Iterator iterator;
 	for(iterator = Begin(); !IsPastRear(iterator); iterator++)
-		cout << *iterator << endl;
+		std::cout << *iterator << std::endl;
 } 
 
 #endif
