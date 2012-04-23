@@ -13,6 +13,7 @@ public:
 	class Iterator {
     private:
 		int index;
+		Type *data;
     public:
 		friend class Vector;
         Iterator();
@@ -26,7 +27,7 @@ public:
         Type operator*();
     };
 
-	friend class Iterator;
+	
 	Vector();
 	Vector(int size);
 	Vector(const Vector<Type> &);
@@ -45,11 +46,11 @@ public:
     void Clear(); 
     void Print(); 
     //Iterator:
-    int IsBeforeFirst(Iterator);
-    int IsPastRear(Iterator);
-    int IsDereferencable(Iterator);
-    void Insert(Iterator, Type);
-    void Erase(Iterator);
+    int IsBeforeFirst(Iterator &);
+    int IsPastRear(Iterator &);
+    int IsDereferencable(Iterator &);
+    void Insert(Iterator &, const Type &);
+    void Erase(Iterator &);
     Iterator MoveAtIndex(int);
     Iterator Begin();
     Iterator End(); 
@@ -58,14 +59,15 @@ public:
 //Iterator
 //Constructor
 template<class Type>
-Vector<Type>::Iterator::Iterator(): index(0) {}
+Vector<Type>::Iterator::Iterator(): index(0), data(NULL) {}
 //Constructor on index
 template<class Type>
-Vector<Type>::Iterator::Iterator(int i): index(i) {}
+Vector<Type>::Iterator::Iterator(int i): index(i), data(NULL) {}
 //Constructor copy
 template<class Type>
 Vector<Type>::Iterator::Iterator(const Iterator &iterator) {
 	index = iterator.index;
+	data = iterator.data;
 }
 // ++inc
 template<class Type>
@@ -104,6 +106,7 @@ template<class Type>
 Vector<Type>::Vector() {
 	size = 0;
 	psize = 0;
+	data = NULL;
 }
 //Constructor (size)
 template<class Type>
@@ -130,22 +133,22 @@ Vector<Type>::~Vector() {
 //Vector. Operations With Iterator
 //Before first
 template<class Type>
-int Vector<Type>::IsBeforeFirst(typename Vector<Type>::Iterator iterator) {
+int Vector<Type>::IsBeforeFirst(typename Vector<Type>::Iterator &iterator) {
 	return iterator.index < 0;
 }
 //Past rear
 template<class Type>
-int Vector<Type>::IsPastRear(typename Vector<Type>::Iterator iterator) {
+int Vector<Type>::IsPastRear(typename Vector<Type>::Iterator &iterator) {
 	return iterator.index >= size; 
 }
 //Is Dereferencable
 template<class Type>
-int Vector<Type>::IsDereferencable(typename Vector<Type>::Iterator iterator) {
+int Vector<Type>::IsDereferencable(typename Vector<Type>::Iterator &iterator) {
 	return !IsBeforeFirst(iterator) && !IsPastRear(iterator);
 }
 //Insert
 template<class Type>
-void Vector<Type>::Insert(typename Vector<Type>::Iterator iterator, Type element) {
+void Vector<Type>::Insert(typename Vector<Type>::Iterator &iterator, const Type &element) {
 	if(Empty()) {
 		if(size == psize) {
 			psize++;
@@ -167,7 +170,7 @@ void Vector<Type>::Insert(typename Vector<Type>::Iterator iterator, Type element
 }
 //Erase
 template<class Type>
-void Vector<Type>::Erase(typename Vector<Type>::Iterator iterator) {
+void Vector<Type>::Erase(typename Vector<Type>::Iterator &iterator) {
 	Type *pointer = data + iterator.index;
 	memmove(pointer, pointer + 1, size - iterator.index);
 	size--;
@@ -177,6 +180,7 @@ template<class Type>
 typename Vector<Type>::Iterator Vector<Type>::MoveAtIndex(int index) {
 	Iterator iterator;
 	iterator.index = index;
+	iterator.data = data;
 	return iterator;
 }
 //Begin
@@ -184,14 +188,16 @@ template<class Type>
 typename Vector<Type>::Iterator Vector<Type>::Begin() {
 	Iterator iterator;
 	iterator.index = 0;
+	iterator.data = data;
 	return iterator;
 }
 //End
 template<class Type>
 typename Vector<Type>::Iterator Vector<Type>::End() {
 	Iterator iterator;
+	iterator.data = data;
 	if(!Empty())
-		iterator.index = size - 1;
+		iterator.index = size;
 	return iterator;
 } 
 //Vector
@@ -203,6 +209,7 @@ Vector<Type> Vector<Type>::operator=(const Vector &vector) {
 	data = (Type*)malloc(sizeof(Type) * size);
 	for(iterator = vector.Begin(), iter = Begin(); !IsPastRear(iterator); iterator++, iter++) 
 		*iterator = *iter;
+	return *this;
 }
 //Empty
 template<class Type>
