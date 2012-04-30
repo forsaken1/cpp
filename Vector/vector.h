@@ -14,6 +14,7 @@ public:
 	private:
 		int index;
 		Type *data;
+		//Vector *parent;
 	public:
 		friend class Vector;
 		Iterator();

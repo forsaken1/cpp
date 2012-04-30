@@ -1,243 +1,148 @@
-#include "List.h"
+#include "BasicList.h"
 
-
-
-/*////////////////////class Iterator
+////////Basic Iterator
 //Constructor
-template<class Type>
-List<Type>::Iterator::Iterator() {
-    element = new Element;
+BasicIterator::BasicIterator() {
+	element = new BasicElement;
 }
-///////////////////////////Inc\Dec
-template<class Type>
-typename List<Type>::Iterator &List<Type>::Iterator::operator++() {
+//Constructor Copy
+BasicIterator::BasicIterator(const BasicIterator &iterator) {
+	element = iterator.element;
+}
+// ++inc
+BasicIterator &BasicIterator::operator++() {
     element = element->nextElement;
     return *this;
 }
-
-template<class Type>
-typename const List<Type>::Iterator List<Type>::Iterator::operator++(int) {
-    Iterator old(*this);
+// inc++
+const BasicIterator BasicIterator::operator++(int) {
+    BasicIterator old(*this);
 	element = element->nextElement;
     return old;
 }
-
-template<class Type>
-typename List<Type>::Iterator &List<Type>::Iterator::operator--() {
+// --dec
+BasicIterator &BasicIterator::operator--() {
     element = element->previousElement;
     return *this;
 }
-
-template<class Type>
-typename const List<Type>::Iterator List<Type>::Iterator::operator--(int) {
-    Iterator old(*this);
+// dec--
+const BasicIterator BasicIterator::operator--(int) {
+    BasicIterator old(*this);
 	element = element->previousElement;
     return old;
 }
 //operator ==
-template<class Type>
-int List<Type>::Iterator::operator==(Iterator &iter) {
-	return GetElementPointer() == iter.GetElementPointer();
+int BasicIterator::operator==(BasicIterator &iter) {
+	return element == iter.element;
 }
 //operator !=
-template<class Type>
-int List<Type>::Iterator::operator!=(Iterator &iter) {
-    return GetElementPointer() != iter.GetElementPointer();
+int BasicIterator::operator!=(BasicIterator &iter) {
+    return element != iter.element;
 }
-//Dereference iterator
-template<class Type>
-Type List<Type>::Iterator::operator*() {
-    return element->value;   
-}
-//Get pointer of element
-template<class Type>
-typename List<Type>::Element* List<Type>::Iterator::GetElementPointer() {
-    return element;   
-}
-//Set pointer of element
-template<class Type>
-void List<Type>::Iterator::SetElementPointer(Element *elem) {
-    element = elem;
-}
-/////////////////////////////class List
+
+////////Basic List
 //Constructor
-template<class Type>
-List<Type>::List() {
-    size = 0;
-    beforeFirst = new Element;
-    pastRear = new Element;
+BasicList::BasicList() {
+	size = 0;
+    beforeFirst = new BasicElement;
+    pastRear = new BasicElement;
     
     beforeFirst->previousElement = NULL;
     beforeFirst->nextElement = pastRear;
-	beforeFirst->value = NULL;
 
     pastRear->previousElement = beforeFirst;
     pastRear->nextElement = NULL;
-	pastRear->value = NULL;
 }
-//Copy constructor 
-template<class Type>
-List<Type>::List(List<Type> &rlist) {
-    beforeFirst = new Element;
-    pastRear = new Element;
+//Constructor Copy
+BasicList::BasicList(BasicList &rlist) {
+    beforeFirst = new BasicElement;
+    pastRear = new BasicElement;
     
     beforeFirst->previousElement = NULL;
-	beforeFirst->value = NULL;
-
     pastRear->nextElement = NULL;
-	pastRear->value = NULL;
 
     size = rlist.size;
 
-	List<Type>::Iterator iterator;
-	Element *element, *next;
+	BasicIterator iterator;
+	BasicElement *element, *next;
 	element = beforeFirst;
 
 	for(iterator = rlist.Begin(); iterator != rlist.End(); iterator++) {
-		next = new Element;
+		next = new BasicElement;
 		element->nextElement = next;
 		next->previousElement = element;
 		element = next;
-		element->value = *iterator;
 	}
 	pastRear->previousElement = element;
 	element->nextElement = pastRear;
 }
 //Destructor
-template<class Type>
-List<Type>::~List() {
+BasicList::~BasicList() {
     Clear();
     delete beforeFirst;
     delete pastRear;
 }
-// = 
-template<class Type>
-typename List<Type> &List<Type>::operator=(List<Type> &rlist) {
-    Clear();
-
+//operator=
+BasicList BasicList::operator=(BasicList &rlist) {
+	Clear();
     size = rlist.size;
 
-	List<Type>::Iterator iterator;
-	Element *element, *next;
+	BasicIterator iterator;
+	BasicElement *element, *next;
 	element = beforeFirst;
 
 	for(iterator = rlist.Begin(); iterator != rlist.End(); iterator++) {
-		next = new Element;
+		next = new BasicElement;
 		element->nextElement = next;
 		next->previousElement = element;
 		element = next;
-		element->value = *iterator;
 	}
 	pastRear->previousElement = element;
 	element->nextElement = pastRear;
     return *this;
 }
-//Swap
-template<class Type>
-void List<Type>::Swap(List<Type> list) {
-    List<Type> temp;
-    temp = list;
-    list = *this;
-    *this = temp;
+/*//Push 
+void BasicList::PushFront() {
+	BasicIterator iterator = Begin();
+//    Insert(iterator);
 }
-//Insert at index
-template<class Type>
-void List<Type>::InsertAtIndex(int index, const Type &value) {
-    Iterator iterator = MoveAtIndex(index);
-    Insert(iterator, value);
+
+void BasicList::PushBack() {
+	BasicIterator iterator = End();
+	iterator++;
+//    Insert(iterator);
 }
-//Push front element
-template<class Type>
-void List<Type>::PushFront(const Type &value) {
-    Iterator iterator = Begin();
-    Insert(iterator, value);
-}
-//Push back element
-template<class Type>
-void List<Type>::PushBack(const Type &value) {
-    Iterator iterator = End();
-    ++iterator;
-    Insert(iterator, value);
-}
-//Pop front element
-template<class Type>
-void List<Type>::PopFront() {
+//Pop
+void BasicList::PopFront() {
 	if(Empty()) return;
-    Iterator iterator = Begin();
+    BasicIterator iterator = Begin();
     Erase(iterator);
 }
-//Pop back element
-template<class Type>
-void List<Type>::PopBack() {
+
+void BasicList::PopBack() {
 	if(Empty()) return;
-    Iterator iterator = End();
+    BasicIterator iterator = End();
     Erase(iterator);
-}
-//List is empty?
-template<class Type>
-int List<Type>::Empty() {
-    return size == 0 ? 1 : 0;
-}
+}*/
 //Clear
-template<class Type>
-void List<Type>::Clear() {
+void BasicList::Clear() {
 	if(Empty()) return;
     size = 0;
-    for(Iterator iterator = Begin(); !IsPastRear(iterator); iterator++) 
+    for(BasicIterator iterator = Begin(); !IsPastRear(iterator); iterator++) 
         Erase(iterator);
 }
-//Print
-template<class Type>
-void List<Type>::Print() {
-    if(Empty()) {
-        std::cout << "List is empty" << std::endl;
-        return;
-    }
-    Iterator iterator = Begin();
-    
-    while(!IsPastRear(iterator)) {
-        std::cout << *iterator << " "; 
-		++iterator;
-    }
-    std::cout << std::endl;
-}
-//Get size
-template<class Type>
-int List<Type>::GetSize() {
-    return size;   
-}
-//Get front element (by stl:list::front)
-template<class Type>
-Type List<Type>::GetFrontElement() {
-    return Empty() ? NULL : beforeFirst->nextElement->value;
-}
-//Get back element (by stl::list::back)
-template<class Type>  
-Type List<Type>::GetBackElement() {
-    return Empty() ? NULL : pastRear->previousElement->value;
-}
-//Get element by index
-template<class Type>  
-Type List<Type>::GetElementByIndex(int index) {
-	List<Type>::Iterator iterator = Begin();
 
-	if(Empty()) 
-		return NULL;
-	else 
-		for(int i = 0; i < index; i++)
-			if(IsDereferencable(iterator)) iterator++;
-			else return NULL;
-
-	return *iterator;
+int BasicList::Empty() {
+	return size == 0 ? 1 : 0;
 }
-//////////////////////Operations with iterator
-//Insert
-template<class Type>
-void List<Type>::Insert(Iterator iterator, const Type &value) {
-    Element *newElement, *element;    
-    newElement = new Element;
-    newElement->value = value;
-    element = iterator.GetElementPointer();
+
+int BasicList::GetSize() {
+	return size;
+}
+
+void BasicList::Insert(BasicIterator &iterator, BasicElement *newElement) {
+	BasicElement *element;  
+    element = iterator.element;
     newElement->previousElement = element->previousElement;
     newElement->nextElement = element;
     element->previousElement->nextElement = newElement;
@@ -245,52 +150,44 @@ void List<Type>::Insert(Iterator iterator, const Type &value) {
     element = newElement;
     size++;
 }
-//Move at index
-template<class Type>
-typename List<Type>::Iterator List<Type>::MoveAtIndex(int index) {
-    Iterator iterator = Begin();
-    for(int i = 0; i < index; i++) iterator++;
-    return iterator;
-}
-//Erase
-template<class Type>
-void List<Type>::Erase(Iterator iterator) {
-    if(Empty()) return;
-    Element *element;
-    element = iterator.GetElementPointer();
+
+void BasicList::Erase(BasicIterator &iterator) {
+	if(Empty()) return;
+    BasicElement *element;
+    element = iterator.element;
 	iterator++;
     element->previousElement->nextElement = element->nextElement;
     element->nextElement->previousElement = element->previousElement;
     delete element;
     size--;
 }
-//Begin
-template<class Type>
-typename List<Type>::Iterator List<Type>::Begin() {
-    Iterator iterator;
-    iterator.SetElementPointer(beforeFirst->nextElement);
+
+BasicIterator BasicList::MoveAtIndex(int index) {
+	BasicIterator iterator = Begin();
+    for(int i = 0; i < index; i++) iterator++;
     return iterator;
 }
-//End
-template<class Type>
-typename List<Type>::Iterator List<Type>::End() {
-    Iterator iterator;
-    iterator.SetElementPointer(pastRear->previousElement);
+
+BasicIterator BasicList::Begin() {
+	BasicIterator iterator;
+	iterator.element = beforeFirst->nextElement;
     return iterator;
 }
-/////////////////////////////////Check iterator
-//Is dereferencable
-template<class Type>
-int List<Type>::IsDereferencable(Iterator iterator) {
-    return !IsBeforeFirst(iterator) && !IsPastRear(iterator);
+
+BasicIterator BasicList::End() {
+	BasicIterator iterator;
+	iterator.element = pastRear;
+    return iterator;
 }
-//Is first
-template<class Type>
-int List<Type>::IsBeforeFirst(Iterator iterator) {
-    return iterator.GetElementPointer() == beforeFirst ? 1 : 0;
+
+int BasicList::IsBeforeFirst(BasicIterator &iterator) { 
+	return iterator.element == beforeFirst ? 1 : 0;
 }
-//Is past
-template<class Type>
-int List<Type>::IsPastRear(Iterator iterator) {
-    return iterator.GetElementPointer() == pastRear ? 1 : 0;
-}*/
+
+int BasicList::IsPastRear(BasicIterator &iterator) {
+	return iterator.element == pastRear ? 1 : 0;
+}
+
+int BasicList::IsDereferencable(BasicIterator &iterator) {
+	return !IsBeforeFirst(iterator) && !IsPastRear(iterator);
+}
