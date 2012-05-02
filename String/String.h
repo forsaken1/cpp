@@ -1,24 +1,42 @@
+
+#ifndef STRING_H
+#define STRING_H
+
 #include <iostream>
+
 using namespace std;
 
-class String {   
-    class ProxyChar {
-        char value;
-    };
-     
+class ProxyChar {
+	char* string;
+	int index;
+public:
+	ProxyChar(char* str, int ind): string(str), index(ind) {}
+	operator char() { return string[index]; }
+	ProxyChar operator=(const char &ch) { string[index] = ch; }
+	int operator==(const char &ch) { return string[index] == ch; }
+};
+
+/*class ProxySubString {
+	char* value;
+	operator String();
+};*/
+
+class String {      
+
     class Buf {
     public:
+		friend String;
+
         char *string;
         int length, rc;
 
         Buf(const char * = "");
         ~Buf();
     
-        void incRC();
-        void decRC();
+        void operator++();
+        void operator--();
     };
     
-private:
     Buf *buf;
 public:
     String(const char * = "");
@@ -28,22 +46,29 @@ public:
     String operator=(const String &);
     String operator+(const String &);
     String operator+=(const String &);
-    int getLength() const;
+    int GetLength() const;
     int operator!() const;
-    Buf* getBuf() const;
-    int getRC() const;
-    char* getString() const;
     
     int operator==(const String &) const;
     int operator!=(const String &) const;
     int operator<(const String &) const;
     int operator>(const String &) const;
     int operator>=(const String &) const;
-    
     int operator<=(const String &) const;
-    char &operator[](int);
-    String operator()(int, int);
+
+	int operator==(const char *) const;
+    int operator!=(const char *) const;
+    int operator<(const char *) const;
+    int operator>(const char *) const;
+    int operator>=(const char *) const;
+    int operator<=(const char *) const;
+
+    ProxyChar &operator[](int);
+    //ProxySubString &operator()(int, int);
     friend ostream &operator<<(ostream &, const String &);
     friend istream &operator>>(istream &, String &);
+
+	int getRC() const; //for debug
 };
 
+#endif STRING_H
