@@ -105,7 +105,7 @@ BasicList BasicList::operator=(BasicList &rlist) {
 void BasicList::Clear() {
 	if(Empty()) return;
     size = 0;
-    for(BasicIterator iterator = Begin(); !IsPastRear(iterator); iterator++) 
+    for(BasicIterator iterator = Begin(); iterator != End(); iterator++) 
         Erase(iterator);
 }
 
@@ -124,7 +124,7 @@ void BasicList::Insert(BasicIterator &iterator, BasicElement *newElement) {
     newElement->nextElement = element;
     element->previousElement->nextElement = newElement;
     element->previousElement = newElement;
-    element = newElement;
+    iterator.element = newElement;
     size++;
 }
 
@@ -155,16 +155,4 @@ BasicIterator BasicList::End() {
 	BasicIterator iterator;
 	iterator.element = pastRear;
     return iterator;
-}
-
-int BasicList::IsBeforeFirst(BasicIterator &iterator) { 
-	return iterator.element == beforeFirst ? 1 : 0;
-}
-
-int BasicList::IsPastRear(BasicIterator &iterator) {
-	return iterator.element == pastRear ? 1 : 0;
-}
-
-int BasicList::IsDereferencable(BasicIterator &iterator) {
-	return !IsBeforeFirst(iterator) && !IsPastRear(iterator);
 }

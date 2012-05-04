@@ -57,6 +57,9 @@ int main() {
 	test(empty == "Alexey");
 
 	test(empty[0] == 'A');
+	empty[5] = 'v';
+	test(empty == "Alexev");
+	test(empty(0, 4) == "Alex");
 	
 	system("PAUSE");
 	return 0;

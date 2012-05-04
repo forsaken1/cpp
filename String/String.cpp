@@ -78,8 +78,8 @@ ProxyChar String::operator[](int index) {
         return ProxyChar(buf->string, index);
     else cout << "Warning: out of range\n";
 }
-/*
-ProxySubString &String::operator()(int index, int _length) {  
+
+String String::operator()(int index, int _length) {  
     if(0 <= index && index < buf->length) {
         String str;
         int i, j = 0;
@@ -90,10 +90,10 @@ ProxySubString &String::operator()(int index, int _length) {
         for(i = index; i < index + _length; i++, j++)
             str.buf->string[j] = buf->string[i];
         str.buf->string[j] = '\0';
-        return ProxySubString(str);
+        return str;
     }
     else cout << "Warning: out of range\n";
-}*/
+}
 
 ostream &operator<<(ostream &output, const String &s) {
     output << s.buf->string;

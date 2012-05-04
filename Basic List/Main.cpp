@@ -22,7 +22,7 @@ void compareWithMyList(List<int> &mylist, List<int> &flist) {
 	Iterator<int> iterator = mylist.Begin();
 	Iterator<int> iter = flist.Begin();
 
-	for(; iter != mylist.End(); iterator++, iter++) 
+	for(; iterator != mylist.End(); iterator++, iter++) 
 		if(*iterator != *iter) {
 			std::cout << "Test error: Compare error" << std::endl;
 			return;
@@ -58,16 +58,29 @@ int main() {
 	}
 	compareWithStlList(mylist, slist);
 
+	for(int i = 0; i < 10; i++) {
+		mylist.InserAtIndex(0, i);
+		slist.push_front(i);
+	}
+	compareWithStlList(mylist, slist);
+
 	List<int> hlist = mylist;
 	flist = mylist;
-
-	//hlist.Print();
-	//flist.Print();
 
 	compareWithMyList(mylist, hlist);
 	compareWithMyList(mylist, flist);
 
-	test(mylist.GetSize() == 180);
+	test(mylist.GetSize() == slist.size());
+
+	Iterator<int> iter  = mylist.Begin();
+	test(*iter == mylist.GetFirstElement());
+
+	iter = mylist.End();
+	iter--;
+	test(*iter == mylist.GetLastElement());
+
+	iter = mylist.MoveAtIndex(100);
+	test(*iter == mylist.GetElementByIndex(100));
 	
 	mylist.Clear();
 	test(mylist.Empty());

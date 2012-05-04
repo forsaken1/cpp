@@ -12,14 +12,9 @@ class ProxyChar {
 public:
 	ProxyChar(char* str, int ind): string(str), index(ind) {}
 	operator char() { return string[index]; }
-	ProxyChar operator=(const char &ch) { string[index] = ch; }
+	ProxyChar operator=(const char &ch) { string[index] = ch; return *this; }
 	int operator==(const char &ch) { return string[index] == ch; }
 };
-/*
-class ProxySubString {
-	char* value;
-	operator char*() {}
-};*/
 
 class String {      
 
@@ -64,7 +59,7 @@ public:
     int operator<=(const char *) const;
 
     ProxyChar operator[](int);
-	//ProxySubString &operator()(int, int);
+	String operator()(int, int);
     friend ostream &operator<<(ostream &, const String &);
     friend istream &operator>>(istream &, String &);
 
