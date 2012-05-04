@@ -101,29 +101,6 @@ BasicList BasicList::operator=(BasicList &rlist) {
 	element->nextElement = pastRear;
     return *this;
 }
-/*//Push 
-void BasicList::PushFront() {
-	BasicIterator iterator = Begin();
-//    Insert(iterator);
-}
-
-void BasicList::PushBack() {
-	BasicIterator iterator = End();
-	iterator++;
-//    Insert(iterator);
-}
-//Pop
-void BasicList::PopFront() {
-	if(Empty()) return;
-    BasicIterator iterator = Begin();
-    Erase(iterator);
-}
-
-void BasicList::PopBack() {
-	if(Empty()) return;
-    BasicIterator iterator = End();
-    Erase(iterator);
-}*/
 //Clear
 void BasicList::Clear() {
 	if(Empty()) return;

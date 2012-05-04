@@ -73,13 +73,13 @@ int String::operator>(const char *s) const  { return strcmp(buf->string, s) > 0;
 int String::operator>=(const char *s) const { return strcmp(buf->string, s) >= 0; }
 int String::operator<=(const char *s) const { return strcmp(buf->string, s) <= 0; }
 
-ProxyChar &String::operator[](int index) { 
+ProxyChar String::operator[](int index) { 
     if(0 <= index && index < buf->length)
         return ProxyChar(buf->string, index);
     else cout << "Warning: out of range\n";
 }
-
-/*ProxySubString &String::operator()(int index, int _length) {  
+/*
+ProxySubString &String::operator()(int index, int _length) {  
     if(0 <= index && index < buf->length) {
         String str;
         int i, j = 0;
@@ -90,7 +90,7 @@ ProxyChar &String::operator[](int index) {
         for(i = index; i < index + _length; i++, j++)
             str.buf->string[j] = buf->string[i];
         str.buf->string[j] = '\0';
-        return (ProxySubString)str;
+        return ProxySubString(str);
     }
     else cout << "Warning: out of range\n";
 }*/

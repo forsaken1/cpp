@@ -50,37 +50,36 @@ template<class Type>
 class Element: public BasicElement {
 public:
 	Type value;
-	//Element<Type> *previousElement, *nextElement;
 	Element(const Type &v): value(v) {}
 };
 
 template<class Type>
 class Iterator: public BasicIterator {
 public:
-	//Element<Type> *element;
 	Iterator() {}
-	//Iterator(const Iterator &iter): element(iter.element) {}
-        
+       
 	Type operator*() { return ((Element<Type>*)element)->value; }
 };
 
 template<class Type>
-class List: public BasicList {
-public:    
-	//Element<Type> *beforeFirst, *pastRear;
-	/*List() {
-		size = 0;
-		beforeFirst = new Element<Type>;
-		pastRear = new Element<Type>;
-		beforeFirst->nextElement = pastRear;
-		pastRear->previousElement = beforeFirst;
-		pastRear->nextElement = NULL;
-		beforeFirst->previousElement = NULL;
+class List: protected BasicList {
+public:
+	List(): BasicList() {}
+	List(List<Type> &list) {
+		BasicList((BasicList)list);
 	}
-	List(const List &list): BasicList(list) {}*/
+	List<Type> operator=(List<Type> &list) {
+		BasicList::operator=(list);
+		return *this;
+	}
+	void Clear() { BasicList::Clear(); }
+
+	int Empty() { return BasicList::Empty(); }
+
+	int GetSize() { return BasicList::GetSize(); }
 
 	void PushFront(Type &value) {
-		Iterator<Type> iterator = Begin();
+		BasicIterator iterator = BasicList::Begin();
 		Insert(iterator, value);
 	}
     void PushBack(Type &value) {
@@ -88,13 +87,13 @@ public:
 		Insert(iterator, value);
 	}
 	void PopFront() {
-		BasicIterator iterator = Begin();
-		Erase(iterator);
+		BasicIterator iterator = BasicList::Begin();
+		BasicList::Erase(iterator);
 	}
 	void PopBack() {
-		BasicIterator iterator = End();
+		BasicIterator iterator = BasicList::End();
 		iterator--;
-		Erase(iterator);
+		BasicList::Erase(iterator);
 	}
 	void Print() {
 		for(Iterator<Type> iterator = Begin(); iterator != End(); iterator++)
@@ -110,7 +109,7 @@ public:
 		iterator.element = pastRear;
 		return iterator;
 	}
-	void Insert(BasicIterator &iterator, Type value) {
+	void Insert(BasicIterator &iterator, const Type &value) {
 		BasicList::Insert(iterator, new Element<Type>(value));
 	}
 };

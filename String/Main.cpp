@@ -56,7 +56,7 @@ int main() {
 	test(nstr == " ");
 	test(empty == "Alexey");
 
-	test(empty[1] == "A");
+	test(empty[0] == 'A');
 	
 	system("PAUSE");
 	return 0;
