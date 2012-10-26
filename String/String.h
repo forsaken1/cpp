@@ -1,4 +1,3 @@
-
 #ifndef STRING_H
 #define STRING_H
 
@@ -20,7 +19,7 @@ class String {
 
     class Buf {
     public:
-		friend String;
+	friend String;
 
         char *string;
         int length, rc;
@@ -51,7 +50,7 @@ public:
     int operator>=(const String &) const;
     int operator<=(const String &) const;
 
-	int operator==(const char *) const;
+    int operator==(const char *) const;
     int operator!=(const char *) const;
     int operator<(const char *) const;
     int operator>(const char *) const;
@@ -59,11 +58,11 @@ public:
     int operator<=(const char *) const;
 
     ProxyChar operator[](int);
-	String operator()(int, int);
+    String operator()(int, int);
     friend ostream &operator<<(ostream &, const String &);
     friend istream &operator>>(istream &, String &);
 
-	int getRC() const; //for debug
+    int getRC() const; //for debug
 };
 
 #endif STRING_H
